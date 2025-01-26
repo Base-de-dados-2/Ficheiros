@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Stand{% endblock %}
+
+{% block content %}
+    <h2>Detalhes do Stand</h2>
+    <ul>
+        <li><strong>ID:</strong> {{ stand.id_stand }}</li>
+        <li><strong>Nome:</strong> {{ stand.nome }}</li>
+        <li><strong>Localização:</strong> {{ stand.localizacao }}</li>
+        <li><strong>Responsável:</strong> {{ stand.responsavel }}</li>
+    </ul>
+    <a href="{% url 'stand_listar' %}" class="btn btn-secondary">Voltar para a lista</a>
+    <a href="{% url 'stand_atualizar' id=stand.id_stand %}" class="btn btn-primary">Editar</a>
+{% endblock %}

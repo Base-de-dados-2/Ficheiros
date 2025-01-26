@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Transação de Venda{% endblock %}
+
+{% block content %}
+<h2>Editar Transação de Venda</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Seleção de Cliente -->
+    <div class="form-group">
+        <label for="id_cliente">Cliente</label>
+        <select class="form-control" id="id_cliente" name="id_cliente" required>
+            <option value="" {% if form.id_cliente.value == "" %}selected{% endif %}>Escolha o cliente</option>
+            {% for cliente in clientes %}
+                <option value="{{ cliente.id_cliente }}" {% if cliente.id_cliente == form.id_cliente.value %}selected{% endif %}>
+                    {{ cliente.id_cliente }} - {{ cliente.nome }}
+                </option>
+            {% endfor %}
+        </select>
+        {% if form.id_cliente.errors %}
+            <div class="text-danger">
+                {% for error in form.id_cliente.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Seleção de Veículo -->
+    <div class="form-group">
+        <label for="id_veiculo">Veículo</label>
+        <select class="form-control" id="id_veiculo" name="id_veiculo" required>
+            <option value="" {% if form.id_veiculo.value == "" %}selected{% endif %}>Escolha o veículo</option>
+            {% for veiculo in veiculos %}
+                <option value="{{ veiculo.id }}" {% if veiculo.id == form.id_veiculo.value %}selected{% endif %}>
+                    {{ veiculo.modelo }} - {{ veiculo.marca }}
+                </option>
+            {% endfor %}
+        </select>
+        {% if form.id_veiculo.errors %}
+            <div class="text-danger">
+                {% for error in form.id_veiculo.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Seleção de Vendedor -->
+    <div class="form-group">
+        <label for="id_vendedor">Vendedor</label>
+        <select class="form-control" id="id_vendedor" name="id_vendedor" required>
+            <option value="" {% if form.id_vendedor.value == "" %}selected{% endif %}>Escolha o vendedor</option>
+            {% for vendedor in vendedores %}
+                <option value="{{ vendedor.id_vendedor }}" {% if vendedor.id_vendedor == form.id_vendedor.value %}selected{% endif %}>
+                    {{ vendedor.id_vendedor }} - {{ vendedor.nome }}
+                </option>
+            {% endfor %}
+        </select>
+        {% if form.id_vendedor.errors %}
+            <div class="text-danger">
+                {% for error in form.id_vendedor.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Data da Venda -->
+    <div class="form-group">
+        <label for="data_venda">Data da Venda</label>
+        <input type="datetime-local" class="form-control" id="data_venda" name="data_venda" value="{{ form.data_venda.value }}" required>
+        {% if form.data_venda.errors %}
+            <div class="text-danger">
+                {% for error in form.data_venda.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Valor da Venda -->
+    <div class="form-group">
+        <label for="valor_venda">Valor da Venda (€)</label>
+        <input type="number" class="form-control" id="valor_venda" name="valor_venda" value="{{ form.valor_venda.value }}" step="0.01" required>
+        {% if form.valor_venda.errors %}
+            <div class="text-danger">
+                {% for error in form.valor_venda.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    <a href="{% url 'transacaovenda_listar' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

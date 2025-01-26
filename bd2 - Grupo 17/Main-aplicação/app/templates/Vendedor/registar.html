@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Vendedor{% endblock %}
+
+{% block content %}
+<h2>Registrar Vendedor</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <!-- Campo para selecionar o Utilizador -->
+    <div class="form-group">
+        <label for="id_utilizador">Utilizador</label>
+        <select name="id_utilizador" id="id_utilizador" class="form-control">
+            {% for utilizador in utilizadores %}
+                <option value="{{ utilizador.id_utilizador }}">
+                    {{ utilizador.id_utilizador }} - {{ utilizador.nome }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Campo para inserir o Cargo do Vendedor -->
+    <div class="form-group">
+        <label for="cargo">Cargo</label>
+        <input type="text" name="cargo" id="cargo" class="form-control" value="{{ form.cargo.value }}">
+    </div>
+
+    <!-- Campo para inserir as Vendas Realizadas -->
+    <div class="form-group">
+        <label for="vendas_realizadas">Vendas Realizadas</label>
+        <input type="number" name="vendas_realizadas" id="vendas_realizadas" class="form-control" value="{{ form.vendas_realizadas.value }}">
+    </div>
+
+    <!-- Botão para registrar -->
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
+
+<!-- Exibição de erro, se houver -->
+{% if error %}
+    <p class="text-danger">{{ error }}</p>
+{% endif %}
+{% endblock %}

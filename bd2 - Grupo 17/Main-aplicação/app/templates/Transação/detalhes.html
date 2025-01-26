@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes da Transação de Venda{% endblock %}
+
+{% block content %}
+<h2>Detalhes da Transação de Venda</h2>
+
+<p><strong>ID da Transação:</strong> {{ transacao.id_transacao }}</p>
+
+<!-- Mostrar o Cliente -->
+<p><strong>Cliente:</strong> 
+    {% for cliente in clientes %}
+        {% if cliente.id_cliente == transacao.id_cliente %}
+            {{ cliente.nome }}
+        {% endif %}
+    {% empty %}
+        <span class="text-danger">Cliente não encontrado para este ID.</span>
+    {% endfor %}
+</p>
+
+<!-- Mostrar o Veículo -->
+<p><strong>Veículo:</strong> 
+    {% for veiculo in veiculos %}
+        {% if veiculo.id == transacao.id_veiculo %}
+            {{ veiculo.marca }} - {{ veiculo.modelo }} ({{ veiculo.ano }})
+        {% endif %}
+    {% empty %}
+        <span class="text-danger">Veículo não encontrado para este ID.</span>
+    {% endfor %}
+</p>
+
+<!-- Mostrar o Vendedor -->
+<p><strong>Vendedor:</strong> 
+    {% if vendedores %}
+        {% for vendedor in vendedores %}
+            {% if vendedor.id_vendedor == transacao.id_vendedor %}
+                {{ vendedor.nome }} - {{ vendedor.cargo }} (Vendas realizadas: {{ vendedor.vendas_realizadas }})
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <span class="text-danger">ID de vendedor não encontrado.</span>
+    {% endif %}
+</p>
+
+
+<p><strong>Data da Venda:</strong> {{ transacao.data_venda }}</p>
+
+<p><strong>Valor da Venda:</strong> {{ transacao.valor_venda }}€</p>
+
+<!-- Botões de Ações -->
+{% if transacao.id_transacao %}
+    <a href="{% url 'transacaovenda_atualizar' transacao.id_transacao %}" class="btn btn-warning">Editar</a>
+{% else %}
+    <span class="text-danger">ID não disponível para edição.</span>
+{% endif %}
+<a href="{% url 'transacaovenda_remover' transacao.id_transacao %}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+<a href="{% url 'transacaovenda_listar' %}" class="btn btn-secondary">Voltar</a>
+
+{% endblock %}

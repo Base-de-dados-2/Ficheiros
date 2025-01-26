@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Histórico de Veículo{% endblock %}
+
+{% block content %}
+    <h2>Registrar Histórico de Veículo</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Veículo -->
+        <div class="form-group">
+            <label for="id_veiculo">Veículo</label>
+            <select class="form-control" id="id_veiculo" name="id_veiculo">
+                {% for veiculo in veiculos %}
+                    <option value="{{ veiculo.id }}">
+                        {{ veiculo.id }} - {{ veiculo.modelo }} ({{ veiculo.marca }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Manutenções -->
+        <div class="form-group">
+            <label for="manutencoes">Manutenções</label>
+            <textarea class="form-control" id="manutencoes" name="manutencoes" rows="3" placeholder="Detalhes das manutenções"></textarea>
+        </div>
+
+        <!-- Acidentes -->
+        <div class="form-group">
+            <label for="acidentes">Acidentes</label>
+            <textarea class="form-control" id="acidentes" name="acidentes" rows="3" placeholder="Detalhes dos acidentes"></textarea>
+        </div>
+
+        <!-- Dono Anterior (Alterado para Integer) -->
+        <div class="form-group">
+            <label for="dono_anterior">Donos anteiores</label>
+            <input type="number" class="form-control" id="dono_anterior" name="dono_anterior" placeholder="" min="0">
+        </div>
+
+        <button type="submit" class="btn btn-success">Registrar</button>
+        <a href="{% url 'historico_listar' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

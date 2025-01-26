@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Registar Veículo{% endblock %}
+
+{% block content %}
+<h2>Registar Veículo</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{% url 'stand_listar' %}" class="btn btn-secondary">Voltar</a>
+</form>
+
+<!-- Botão para voltar -->
+
+
+{% endblock %}

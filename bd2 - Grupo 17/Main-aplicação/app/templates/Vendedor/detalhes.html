@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Vendedor{% endblock %}
+
+{% block content %}
+<h2>Detalhes do Vendedor</h2>
+
+<p><strong>ID do Vendedor:</strong> {{ vendedor.id_vendedor }}</p>
+
+<p><strong>Utilizador:</strong> 
+    {% for utilizador in utilizadores %}
+        {% if utilizador.id_utilizador == vendedor.id_utilizador %}
+            {{ utilizador.id_utilizador }} - {{ utilizador.nome }}
+        {% endif %}
+    {% endfor %}
+</p>
+
+<p><strong>Cargo:</strong> {{ vendedor.cargo }}</p>
+
+<p><strong>Vendas Realizadas:</strong> {{ vendedor.vendas_realizadas }}</p>
+
+<a href="{% url 'vendedor_atualizar' vendedor.id_vendedor %}" class="btn btn-warning">Editar</a>
+<a href="{% url 'vendedor_listar' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}

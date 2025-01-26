@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes da Promoção{% endblock %}
+
+{% block content %}
+<h2>Detalhes da Promoção</h2>
+
+<p><strong>ID:</strong> {{ promocao.id_promocao }}</p>
+<p><strong>Nome da Promoção:</strong> {{ promocao.nome_promocao }}</p>
+
+<p><strong>Veículo:</strong> 
+    {% for veiculo in veiculos %}
+        {% if veiculo.id == promocao.id_veiculo %}
+            {{ veiculo.modelo }} - {{ veiculo.marca }}
+        {% endif %}
+    {% endfor %}
+</p>
+
+<p><strong>Categoria:</strong> {{ promocao.categoria }}</p>
+<p><strong>Data de Início:</strong> {{ promocao.data_inicio }}</p>
+<p><strong>Data de Término:</strong> {{ promocao.data_terminada }}</p>
+<p><strong>Percentual de Desconto:</strong> {{ promocao.percentual_desconto }}%</p>
+<p><strong>Descrição:</strong> {{ promocao.descricao }}</p>
+
+<a href="{% url 'promocao_atualizar' promocao.id_promocao %}" class="btn btn-warning">Editar</a>
+<a href="{% url 'promocao_listar' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}

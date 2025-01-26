@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Manutenção{% endblock %}
+
+{% block content %}
+<h2>Registrar Manutenção</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'manutencao_listar' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

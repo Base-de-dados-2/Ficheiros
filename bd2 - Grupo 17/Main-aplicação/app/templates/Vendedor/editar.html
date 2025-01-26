@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Vendedor{% endblock %}
+
+{% block content %}
+<h2>Editar Vendedor</h2>
+
+<!-- Formulário para editar um vendedor existente -->
+<form method="post">
+    {% csrf_token %}
+    <!-- Renderiza os campos do formulário com um estilo mais compacto -->
+    <div class="form-group">
+        <label for="id_utilizador">ID do Utilizador</label>
+        <select class="form-control" id="id_utilizador" name="id_utilizador">
+            {% for utilizador in utilizadores %}
+                <option value="{{ utilizador.id_utilizador }}" {% if utilizador.id_utilizador == form.id_utilizador.value %}selected{% endif %}>
+                    {{ utilizador.id_utilizador }} - {{ utilizador.nome }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="cargo">Cargo</label>
+        <input 
+            type="text" 
+            class="form-control" 
+            id="cargo" 
+            name="cargo" 
+            value="{{ form.cargo.value }}" 
+            placeholder="Digite o cargo do vendedor">
+    </div>
+
+    <div class="form-group">
+        <label for="vendas_realizadas">Vendas Realizadas</label>
+        <input 
+            type="number" 
+            class="form-control" 
+            id="vendas_realizadas" 
+            name="vendas_realizadas" 
+            value="{{ form.vendas_realizadas.value }}" 
+            placeholder="Digite o número de vendas realizadas">
+    </div>
+
+    <!-- Botão para salvar as alterações -->
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+
+    <!-- Link para voltar à página anterior -->
+    <a href="{% url 'vendedor_listar' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

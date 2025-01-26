@@ -1,0 +1,232 @@
+-- Insert Utilizador_BD2
+INSERT INTO Utilizador_BD2 (Nome, Email, Telefone, Tipo_Utilizador)
+VALUES 
+('João Silva', 'joao.silva@email.com', '912345678', 'Cliente'),
+('Ana Oliveira', 'ana.oliveira@email.com', '913456789', 'Vendedor'),
+('Pedro Santos', 'pedro.santos@email.com', '914567890', 'Administrador'),
+('Carla Pereira', 'carla.pereira@email.com', '915678901', 'Cliente'),
+('Luís Almeida', 'luis.almeida@email.com', '916789012', 'Vendedor');
+
+-- Insert Stand_BD2
+INSERT INTO Stand_BD2 (Nome, Localizacao, Responsavel)
+VALUES 
+('Stand Central', 'Lisboa', 'Ana Oliveira'),
+('Stand Norte', 'Porto', 'Luís Almeida'),
+('Stand Sul', 'Faro', 'Pedro Santos');
+
+-- Insert Fornecedor_BD2
+INSERT INTO Fornecedor_BD2 (Nome, Contato, Veiculos_Fornecedor)
+VALUES 
+('Auto Fornecedores Lda', 'auto@fornecedores.com', 'Audi, BMW, Mercedes'),
+('Importadores Premium', 'import@premium.com', 'Toyota, Honda, Nissan'),
+('Veículos Europa', 'veiculos@europa.com', 'Renault, Peugeot, Citroën');
+
+-- Insert Veiculo_BD2
+INSERT INTO Veiculo_BD2 (Marca, Modelo, Ano, Preco, Quilometragem, Cor, Tipo_Combustivel, ID_Stand, ID_Fornecedor)
+VALUES 
+('Audi', 'A4', 2020, 35000, 15000, 'Preto', 'Gasolina', 6, 6),
+('Toyota', 'Corolla', 2021, 25000, 10000, 'Branco', 'Híbrido', 7, 10),
+('BMW', 'X5', 2019, 55000, 30000, 'Cinza', 'Diesel', 14, 9),
+('Renault', 'Clio', 2022, 18000, 5000, 'Vermelho', 'Gasolina', 15, 11),
+('Honda', 'Civic', 2020, 27000, 12000, 'Azul', 'Híbrido', 16, 10);
+
+-- Insert Cliente_BD2
+INSERT INTO Cliente_BD2 (ID_Utilizador, Historico_Compras, Interesse_Veiculos)
+VALUES 
+(4, 'Audi A3 - 2018', 1);
+
+-- Insert Vendedor_BD2
+INSERT INTO Vendedor_BD2 (ID_Utilizador, Cargo, Vendas_Realizadas)
+VALUES 
+(16, 'Gerente de Vendas', 5),
+(17, 'Consultor de Vendas', 2);
+
+-- Insert TransacaoVenda_BD2
+INSERT INTO TransacaoVenda_BD2 (ID_Veiculo, ID_Cliente, ID_Vendedor, Data_Venda, Valor_Venda)
+VALUES 
+(1, 6, 4, '2024-01-10', 34000),
+(23, 3, 2, '2024-01-12', 54000);
+
+-- Insert HistoricoVeiculo_BD2
+INSERT INTO HistoricoVeiculo_BD2 (ID_Veiculo, Manutencoes, Acidentes, Donos_Anteriores)
+VALUES 
+(1, 'Troca de óleo, revisão geral', 'Nenhum', '0'),
+(4, 'Revisão de freios', '1 colisão leve', '1');
+
+-- Insert Manutencao_BD2
+INSERT INTO Manutencao_BD2 (ID_Veiculo, Data_Manutencao, Tipo_Manutencao, Descricao, Oficina_Responsavel)
+VALUES 
+(1, '2024-01-05', 'Troca de óleo', 'Manutenção preventiva', 'Oficina Central'),
+(4, '2024-01-08', 'Revisão de freios', 'Troca de pastilhas de freio', 'Oficina Norte');
+
+-- Insert TestDrive_BD2
+INSERT INTO TestDrive_BD2 (ID_Cliente, ID_Veiculo, Data_Hora_TestDrive, Feedback_Cliente)
+VALUES 
+(2, 4, '2024-01-07 10:00:00', 'Ótima experiência, veículo muito confortável'),
+(14, 22, '2024-01-09 15:00:00', 'Desempenho impressionante, considerarei comprar');
+
+-- Insert Promocao_BD2SELECT * FROM Stand_BD2;
+
+INSERT INTO Promocao_BD2 (Nome_Promocao, ID_Veiculo, Categoria, Data_Inicio, Data_Terminada, Percentual_Desconto, Descricao)
+VALUES 
+('Promoção Ano Novo', 1, 'Premium', '2024-01-01', '2024-01-15', 10, 'Desconto especial para iniciar o ano'),
+('Promoção Verão', 22, 'Eco-friendly', '2024-06-01', '2024-06-30', 15, 'Desconto em veículos híbridos');
+
+
+
+
+-----------------------------------------------------------------------------------------------------------
+
+--SCRIPTS TESTE:
+
+
+SELECT V.Marca, V.Modelo, V.Ano, V.Preco, S.Nome AS Nome_Stand
+FROM Veiculo_BD2 V, Stand_BD2 S
+WHERE V.ID_Stand = S.ID_Stand 
+AND S.Nome = 'Stand Central';
+
+SELECT HV.Manutencoes, HV.Acidentes, HV.Donos_Anteriores, M.Data_Manutencao, M.Tipo_Manutencao
+FROM HistoricoVeiculo_BD2 HV, Manutencao_BD2 M
+WHERE HV.ID_Veiculo = M.ID_Veiculo 
+AND HV.ID_Veiculo = 1;
+
+SELECT T.ID_Transacao, T.Data_Venda, T.Valor_Venda, V.Marca, V.Modelo, U.Nome AS Nome_Cliente
+FROM TransacaoVenda_BD2 T, Veiculo_BD2 V, utilizador_BD2 U, Vendedor_BD2 VD
+WHERE T.ID_Veiculo = V.ID_Veiculo 
+AND VD.ID_utilizador = U.ID_utilizador
+AND T.ID_Vendedor = VD.ID_Vendedor
+AND VD.ID_Vendedor = 1;
+
+
+UPDATE Veiculo_BD2
+SET Preco = Preco * 0.9 -- Aplicar 10% de desconto ao veículo
+WHERE ID_Veiculo = 1;
+
+UPDATE Fornecedor_BD2
+SET Contato = 'novo.contato@fornecedor.com'
+WHERE ID_Fornecedor = 1;
+
+
+
+SELECT VD.ID_Vendedor, U.Nome, COUNT(T.ID_Transacao) AS Total_Vendas
+FROM Vendedor_BD2 VD
+INNER JOIN Utilizador_BD2 U ON VD.ID_Utilizador = U.ID_Utilizador
+LEFT JOIN TransacaoVenda_BD2 T ON VD.ID_Vendedor = T.ID_Vendedor
+GROUP BY VD.ID_Vendedor, U.Nome;
+
+
+
+SELECT S.Nome AS Nome_Stand, SUM(T.Valor_Venda) AS Receita_Total
+FROM Stand_BD2 S
+INNER JOIN Veiculo_BD2 V ON S.ID_Stand = V.ID_Stand
+INNER JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+GROUP BY S.Nome;
+
+
+SELECT ID_Veiculo, Marca, Modelo
+FROM Veiculo_BD2
+WHERE ID_Fornecedor IS NULL;
+
+
+
+SELECT *
+FROM TransacaoVenda_BD2
+WHERE ID_Vendedor IS NULL;
+
+
+
+SELECT 
+    S.Nome AS Nome_Stand,
+    COUNT(DISTINCT V.ID_Veiculo) AS Total_Veiculos_Disponiveis,
+    COUNT(DISTINCT T.ID_Transacao) AS Total_Vendas,
+    COALESCE(SUM(T.Valor_Venda), 0) AS Receita_Total
+FROM Stand_BD2 S
+LEFT JOIN Veiculo_BD2 V ON S.ID_Stand = V.ID_Stand
+LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+GROUP BY S.Nome
+ORDER BY Receita_Total DESC, Total_Vendas DESC;
+
+
+
+SELECT 
+    C.ID_Cliente,
+    U.Nome AS Nome_Cliente,
+    V.Marca,
+    V.Modelo,
+    V.Ano,
+    V.Preco
+FROM Cliente_BD2 C
+INNER JOIN Utilizador_BD2 U ON C.ID_Utilizador = U.ID_Utilizador
+INNER JOIN Veiculo_BD2 V ON C.Interesse_Veiculos = V.ID_Veiculo
+LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+WHERE T.ID_Transacao IS NULL
+
+
+SELECT 
+    P.Nome_Promocao,
+    V.Marca,
+    V.Modelo,
+    V.Preco AS Preco_Original,
+    ROUND(V.Preco * (1 - P.Percentual_Desconto / 100), 2) AS Preco_Com_Desconto,
+    P.Data_Inicio,
+    P.Data_Terminada
+FROM Promocao_BD2 P
+INNER JOIN Veiculo_BD2 V ON P.ID_Veiculo = V.ID_Veiculo
+WHERE CURRENT_DATE BETWEEN P.Data_Inicio AND P.Data_Terminada;
+
+
+SELECT 
+    T.ID_Transacao,
+    T.Data_Venda,
+    T.Valor_Venda,
+    C.ID_Cliente,
+    U_Cliente.Nome AS Nome_Cliente,
+    V.Marca,
+    V.Modelo,
+    V.Ano,
+    Vendedor.ID_Vendedor,
+    U_Vendedor.Nome AS Nome_Vendedor
+FROM TransacaoVenda_BD2 T, Cliente_BD2 C, Utilizador_BD2 U_Cliente, Vendedor_BD2 Vendedor, Utilizador_BD2 U_Vendedor, Veiculo_BD2 V
+WHERE T.ID_Cliente = C.ID_Cliente
+AND C.ID_Utilizador = U_Cliente.ID_Utilizador
+AND T.ID_Vendedor = Vendedor.ID_Vendedor
+AND Vendedor.ID_Utilizador = U_Vendedor.ID_Utilizador
+AND T.ID_Veiculo = V.ID_Veiculo
+ORDER BY T.Data_Venda DESC;
+
+
+
+SELECT 
+    V.ID_Veiculo,
+    V.Marca,
+    V.Modelo,
+    V.Ano,
+    COUNT(T.ID_Transacao) AS Total_Vendas,
+    ROUND(AVG(T.Valor_Venda), 2) AS Preco_Medio_Venda
+FROM Veiculo_BD2 V
+LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+GROUP BY V.ID_Veiculo, V.Marca, V.Modelo, V.Ano
+HAVING COUNT(T.ID_Transacao) <= 1 -- Veículos com 0 ou 1 venda
+ORDER BY Total_Vendas ASC;
+
+
+
+SELECT 
+    EXTRACT(YEAR FROM T.Data_Venda) AS Ano,
+    SUM(T.Valor_Venda) AS Receita_Total
+FROM TransacaoVenda_BD2 T
+GROUP BY EXTRACT(YEAR FROM T.Data_Venda)
+ORDER BY Ano DESC;
+
+
+
+SELECT 
+    V.Marca,
+    V.Modelo,
+    COUNT(DISTINCT T.ID_Transacao) AS Total_Vendas,
+    COUNT(DISTINCT C.ID_Cliente) AS Clientes_Interessados
+FROM Veiculo_BD2 V
+LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+LEFT JOIN Cliente_BD2 C ON C.Interesse_Veiculos = V.ID_Veiculo
+GROUP BY V.Marca, V.Modelo
+ORDER BY Total_Vendas DESC, Clientes_Interessados DESC;

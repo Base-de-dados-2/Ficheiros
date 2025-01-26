@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - {{ user.username }}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-info {
+            margin-top: 20px;
+        }
+        .profile-info div {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+
+        <div class="profile-info">
+            <h2>Perfil de {{ user.username }}</h2>
+
+            <!-- Informações do usuário -->
+            <p><br></p>
+            <div>
+                <strong>Email:</strong> {{ user.email }}
+            </div>
+            <div>
+                <strong>Username:</strong> {{ user.username }}
+            </div>
+
+            <!-- Status de administrador -->
+            <div>
+                <strong>Administrador:</strong> 
+                {% if user.is_staff %}
+                    Sim
+                {% else %}
+                    Não
+                {% endif %}
+                <br>
+                
+            </div>
+            <p><strong>ID do utilizador autenticado:</strong>  {{ user.id }}</p>
+            <!-- Link para editar o perfil ou logout -->
+            <div class="mt-4">
+                <a href="/utilizadores/editar/{{ user.id }}/" class="btn btn-primary">Editar Perfil</a>
+                <a href="/logout/" class="btn btn-danger">Sair</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}

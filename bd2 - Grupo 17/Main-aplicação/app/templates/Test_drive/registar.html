@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Test Drive{% endblock %}
+
+{% block content %}
+    <h2>Registrar Test Drive</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_cliente">Cliente</label>
+            <select class="form-control" id="id_cliente" name="id_cliente">
+                {% for cliente in clientes %}
+                    <option value="{{ cliente.id_cliente }}">
+                        {{ cliente.id_cliente }} - {{ cliente.nome|default:"Nome não encontrado" }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="id_veiculo">Veículo</label>
+            <select class="form-control" id="id_veiculo" name="id_veiculo">
+                {% for veiculo in veiculos %}
+                    <option value="{{ veiculo.id }}">
+                        {{ veiculo.id }} - {{ veiculo.modelo }} ({{ veiculo.marca }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="data_hora_testdrive">Data/Hora</label>
+            <input type="datetime-local" class="form-control" id="data_hora_testdrive" name="data_hora_testdrive">
+        </div>
+        <div class="form-group">
+            <label for="feedback_cliente">Feedback</label>
+            <textarea class="form-control" id="feedback_cliente" name="feedback_cliente" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Registrar</button>
+        <a href="{% url 'testdrive_listar' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

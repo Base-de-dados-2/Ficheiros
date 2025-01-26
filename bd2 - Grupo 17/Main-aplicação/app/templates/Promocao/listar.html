@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Promoções{% endblock %}
+
+{% block content %}
+<h2>Promoções</h2>
+
+{% if promocoes %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome da Promoção</th>
+            <th>Veículo</th>
+            <th>Categoria</th>
+            <th>Data Início</th>
+            <th>Data Término</th>
+            <th>Percentual Desconto</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for promocao in promocoes %}
+        <tr>
+            <td>{{ promocao.id_promocao }}</td>
+            <td>{{ promocao.nome_promocao }}</td>
+            <td>{{ promocao.id_veiculo }}</td> <!-- Exibe apenas o ID do veículo -->
+            <td>{{ promocao.categoria }}</td>
+            <td>{{ promocao.data_inicio }}</td>
+            <td>{{ promocao.data_terminada }}</td>
+            <td>{{ promocao.percentual_desconto }}%</td>
+            <td>
+                <a href="{% url 'promocao_detalhes' promocao.id_promocao %}" class="btn btn-info">Detalhes</a>
+                <a href="{% url 'promocao_atualizar' promocao.id_promocao %}" class="btn btn-warning">Editar</a>
+                <form action="{% url 'promocao_remover' promocao.id_promocao %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta promoção?')">Remover</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Não há promoções registradas.</p>
+{% endif %}
+
+<a href="{% url 'promocao_registar' %}" class="btn btn-primary">Registrar Nova Promoção</a>
+{% endblock %}

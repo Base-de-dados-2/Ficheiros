@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Cliente{% endblock %}
+
+{% block content %}
+<h2>Registrar Cliente</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <!-- Campo para selecionar o Utilizador -->
+    <div class="form-group">
+        <label for="id_utilizador">Utilizador</label>
+        <select name="id_utilizador" id="id_utilizador" class="form-control">
+            {% for utilizador in utilizadores %}
+                <option value="{{ utilizador.id_utilizador }}">
+                    {{ utilizador.id_utilizador }} - {{ utilizador.nome }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Campo para inserir o Histórico de Compras -->
+    <div class="form-group">
+        <label for="historico_compras">Histórico de Compras</label>
+        <textarea name="historico_compras" id="historico_compras" class="form-control" rows="5">{{ form.historico_compras.value }}</textarea>
+    </div>
+
+    <!-- Campo para selecionar apenas um veículo no Interesse em Veículos -->
+    <div class="form-group">
+        <label for="interesse_veiculos">Interesse em Veículos</label>
+        <select name="interesse_veiculos" id="interesse_veiculos" class="form-control">
+            {% for veiculo in veiculos %}
+                <option value="{{ veiculo.id }}">
+                    {{ veiculo.id }} - {{ veiculo.modelo }} ({{ veiculo.marca }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Botão para registrar -->
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
+
+<!-- Exibição de erro, se houver -->
+{% if error %}
+    <p class="text-danger">{{ error }}</p>
+{% endif %}
+{% endblock %}

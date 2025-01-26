@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Históricos de Veículos{% endblock %}
+
+{% block content %}
+    <h2>Lista de Históricos de Veículos</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Veículo</th>
+                <th>Manutenções</th>
+                <th>Acidentes</th>
+                <th>Dono Anterior</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for historico in historicos %}
+                <tr>
+                    <td>{{ historico.id_historico }}</td>
+                    <td>{{ historico.id_veiculo }}</td>
+                    <td>
+                        {% if historico.manutencoes|length > 30 %}
+                            {{ historico.manutencoes|slice:":30" }}...
+                        {% else %}
+                            {{ historico.manutencoes }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if historico.acidentes|length > 30 %}
+                            {{ historico.acidentes|slice:":30" }}...
+                        {% else %}
+                            {{ historico.acidentes }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if historico.dono_anterior|length > 30 %}
+                            {{ historico.dono_anterior|slice:":30" }}...
+                        {% else %}
+                            {{ historico.dono_anterior }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'historico_editar' historico.id_historico %}" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'historico_excluir' historico.id_historico %}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                        <a href="{% url 'historico_detalhes' historico.id_historico %}" class="btn btn-info">Ver Detalhes</a> <!-- Botão para Ver Detalhes -->
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'historico_registrar' %}" class="btn btn-success">Adicionar Novo Histórico</a>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Stand{% endblock %}
+
+{% block content %}
+<h2>Editar Stand</h2>
+
+<!-- Formulário para editar um stand existente -->
+<form method="post">
+    {% csrf_token %}
+    <!-- Exibe os campos do formulário preenchidos -->
+    {{ form.as_p }}
+
+    <!-- Botão para salvar as alterações -->
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+
+    <!-- Link para voltar à página anterior -->
+    <a href="{% url 'stand_listar' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

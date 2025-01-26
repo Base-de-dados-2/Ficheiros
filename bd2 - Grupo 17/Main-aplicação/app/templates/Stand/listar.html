@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Listar Stands{% endblock %}
+
+{% block content %}
+<h2>Stands</h2>
+
+<!-- Caso não haja stands na lista, podemos exibir uma mensagem -->
+{% if stands %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Localização</th>
+                <th>Responsável</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stand in stands %}
+            <tr>
+                <td>{{ stand.id_stand }}</td>
+                <td>{{ stand.nome }}</td>
+                <td>{{ stand.localizacao }}</td>
+                <td>{{ stand.responsavel }}</td>
+                <td>
+                    <!-- Link para ver detalhes do stand -->
+                    <a href="{% url 'stand_listar_id' stand.id_stand %}" class="btn btn-info">Ver Detalhes</a>
+                    <!-- Link para editar o stand -->
+                    <a href="{% url 'stand_atualizar' stand.id_stand %}" class="btn btn-warning">Editar</a>
+
+                    <!-- Formulário para excluir o stand -->
+                    <form action="{% url 'stand_remover' stand.id_stand %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir este stand?')">Remover</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Não há stands cadastrados. Volte mais tarde.</p>
+{% endif %}
+
+<!-- Link para registar um novo stand -->
+<a href="{% url 'stand_registar' %}" class="btn btn-primary">Registar Novo Stand</a>
+{% endblock %}

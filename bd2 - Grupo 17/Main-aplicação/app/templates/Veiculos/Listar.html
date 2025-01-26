@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Listar Veículos{% endblock %}
+
+{% block content %}
+{% if erro %}
+<div class="alert alert-danger" role="alert">
+    {{ erro }}
+</div>
+{% endif %}
+
+
+<h2>Veículos</h2>
+
+<!-- Caso não haja veículos na lista, podemos exibir uma mensagem -->
+{% if veiculos %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Ano</th>
+                <th>Preço</th>
+                <th>Quilometragem</th>
+                <th>Cor</th>
+                <th>Tipo de combustivel</th>
+                <th>Ações</th> <!-- Coluna para os botões de ações -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for veiculo in veiculos %}
+            <tr>
+                <td>{{ veiculo.id }}</td>
+                <td>{{ veiculo.marca }}</td>
+                <td>{{ veiculo.modelo }}</td>
+                <td>{{ veiculo.ano }}</td>
+                <td>{{ veiculo.preco|floatformat:2 }}</td>
+                <td>{{ veiculo.quilometragem }}</td>
+                <td>{{ veiculo.cor }}</td>
+                <td>{{ veiculo.combustivel }}</td>
+                <td>
+                    <a href="{% url 'veiculos_listar_id' veiculo.id %}" class="btn btn-info">Ver Detalhes</a>
+                    <a href="{% url 'veiculos_atualizar' veiculo.id %}" class="btn btn-warning">Editar</a>
+                    <a href="{% url 'veiculos_remover' veiculo.id %}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja remover este veículo?')">
+                        Remover
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No car come back later.</p>
+{% endif %}
+
+<a href="{% url 'veiculos_registar' %}" class="btn btn-primary">Registar Novo Veículo</a>
+{% endblock %}

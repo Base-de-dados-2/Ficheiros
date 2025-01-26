@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Test Drive{% endblock %}
+
+{% block content %}
+<h2>Editar Test Drive</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Seleção de Cliente -->
+    <div class="form-group">
+        <label for="id_cliente">Cliente</label>
+        <select class="form-control" id="id_cliente" name="id_cliente" required>
+            {% for cliente in clientes %}
+                <option value="{{ cliente.id_cliente }}" {% if cliente.id_cliente == form.id_cliente.value %}selected{% endif %}>
+                    {{ cliente.nome }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Seleção de Veículo -->
+    <div class="form-group">
+        <label for="id_veiculo">Veículo</label>
+        <select class="form-control" id="id_veiculo" name="id_veiculo" required>
+            {% for veiculo in veiculos %}
+                <option value="{{ veiculo.id }}" {% if veiculo.id == form.id_veiculo.value %}selected{% endif %}>
+                    {{ veiculo.marca }} - {{ veiculo.modelo }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Data e Hora do Test Drive -->
+    <div class="form-group">
+        <label for="data_hora_testdrive">Data e Hora</label>
+        <input type="datetime-local" class="form-control" id="data_hora_testdrive" 
+               name="data_hora_testdrive" value="{{ form.data_hora_testdrive.value }}" required>
+    </div>
+
+    <!-- Feedback do Cliente -->
+    <div class="form-group">
+        <label for="feedback_cliente">Feedback</label>
+        <textarea class="form-control" id="feedback_cliente" name="feedback_cliente" rows="3" required>{{ form.feedback_cliente.value }}</textarea>
+    </div>
+
+    <!-- Botões -->
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    <a href="{% url 'testdrive_listar' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

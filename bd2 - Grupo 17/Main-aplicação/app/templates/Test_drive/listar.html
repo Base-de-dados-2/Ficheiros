@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Test Drives{% endblock %}
+
+{% block content %}
+    <h2>Lista de Test Drives</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Veículo</th>
+                <th>Data/Hora</th>
+                <th>Feedback</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for testdrive in testdrives %}
+                <tr>
+                    <td>{{ testdrive.id_testdrive }}</td>
+                    <td>{{ testdrive.id_cliente }}</td>
+                    <td>{{ testdrive.id_veiculo }}</td>
+                    <td>{{ testdrive.data_hora_testdrive }}</td>
+                    <td>{{ testdrive.feedback_cliente|truncatewords:8 }}</td>
+                    <td>
+                        <a href="{% url 'testdrive_detalhes' testdrive.id_testdrive %}" class="btn btn-info">Detalhes</a>
+                        <a href="{% url 'testdrive_atualizar' testdrive.id_testdrive %}" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'testdrive_remover' testdrive.id_testdrive %}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'testdrive_registrar' %}" class="btn btn-primary">Adicionar Novo Test Drive</a>
+{% endblock %}

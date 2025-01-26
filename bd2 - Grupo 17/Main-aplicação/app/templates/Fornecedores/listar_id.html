@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Fornecedor{% endblock %}
+
+{% block content %}
+    <h2>Detalhes do Fornecedor</h2>
+    
+    <ul>
+        <li><strong>ID:</strong> {{ fornecedor.id_fornecedor }}</li>
+        <li><strong>Nome:</strong> {{ fornecedor.nome }}</li>
+        <li><strong>Contato:</strong> {{ fornecedor.contato }}</li>
+        <li><strong>Veículos Fornecidos:</strong> {{ fornecedor.veiculos_fornecedor }}</li>
+    </ul>
+    
+    <a href="{% url 'fornecedor_listar' %}" class="btn btn-secondary">Voltar para a lista</a>
+    
+    {% if fornecedor.id_fornecedor %}
+        <a href="{% url 'fornecedor_atualizar' id=fornecedor.id_fornecedor %}" class="btn btn-primary">Editar</a>
+    {% else %}
+        <p>Fornecedor não encontrado ou ID inválido.</p>
+    {% endif %}
+{% endblock %}
+

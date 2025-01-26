@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes dos Veículos usados{% endblock %}
+
+{% block content %}
+    <h2>Detalhes dos Veículos usados</h2>
+    <ul>
+        <li><strong>ID:</strong> {{ veiculo.id }}</li>
+        <li><strong>Marca:</strong> {{ veiculo.marca }}</li>
+        <li><strong>Modelo:</strong> {{ veiculo.modelo }}</li>
+        <li><strong>Ano:</strong> {{ veiculo.ano }}</li>
+    </ul>
+    <a href="{% url 'veiculos_listar_usados' %}" class="btn btn-secondary">Voltar para a lista</a>
+{% endblock %}

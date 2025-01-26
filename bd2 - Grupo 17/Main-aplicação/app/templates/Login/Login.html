@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", Helvetica, Arial, sans-serif;
+            font-weight: 300;
+            margin: 0;
+        }
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            background: #f3f2f2;
+        }
+        h1, h4 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000;
+            opacity: 0.85;
+        }
+        label {
+            font-size: 12.5px;
+            color: #000;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+        form {
+            padding: 40px 30px;
+            background: #fefefe;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-bottom: 20px;
+            width: 300px;
+        }
+        .session {
+            display: flex;
+            flex-direction: row;
+            width: auto;
+            height: auto;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, .12);
+        }
+        .left {
+            width: 280px;
+            height: auto;
+            min-height: 100%;
+            position: relative;
+            background-image: url("https://www.alfaromeousa.com/content/dam/alfa/us/home/canvas-media/ar-d2-bhp-hero-main-stradale-mobile.jpg");
+            background-size: cover;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        .log-in {
+            display: flex;
+            flex-direction: column;
+            padding: 40px 30px;
+            background: #fff;
+            width: 100%;
+        }
+        .floating-label {
+            position: relative;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        input {
+            font-size: 16px;
+            padding: 20px 0px;
+            height: 56px;
+            border: none;
+            border-bottom: solid 1px rgba(0, 0, 0, .1);
+            background: #fff;
+            width: 280px;
+            box-sizing: border-box;
+            transition: all .3s linear;
+            color: #000;
+            font-weight: 400;
+            -webkit-appearance: none;
+            }
+            .link-button {
+    display: inline-block; /* Faz os links se comportarem como botões */
+    text-decoration: none; /* Remove o sublinhado nos links */
+    cursor: pointer;
+    padding: 15px 40px;
+    margin: 5px 10px 0 0;
+    border-radius: 24px;
+    text-align: center;
+    background-color: #92011d;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0px 2px 6px -1px rgba(0, 0, 0, .13);
+    border: none;
+    transition: all .3s ease;
+}
+.link-button:hover {
+    background-color: #af2336; /* Cor de hover */
+}
+button.link-button {
+    border: none; /* Remove borda padrão dos botões */
+    outline: none;
+}
+
+
+        .icon svg {
+            height: 30px;
+            width: 30px;
+            margin: auto;
+            opacity: .15;
+        }
+    </style>
+</head>
+<body>
+
+<div class="session">
+    <div class="left">
+        <!-- SVG or background image as needed -->
+    </div>
+    <form method="POST" class="log-in">
+        <h4>Bem-vindo a Motors Nuva! </h4>
+        
+        
+        <!-- Django CSRF Token -->
+        {% csrf_token %}
+        
+        <!-- Username (Email) Field -->
+        <div class="floating-label">
+            <input placeholder="Nome do utilizador" type="text" name="username" id="username" autocomplete="off">
+            <div class="icon">
+                <!-- SVG icon for username -->
+            </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="floating-label">
+            <input placeholder="Senha" type="password" name="password" id="password" autocomplete="off">
+            <div class="icon">
+                <!-- SVG icon for password -->
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+            
+            
+        <div class="button-group">
+            <button type="submit" class="link-button">Entrar</button>
+            <a href="{% url 'register' %}" class="link-button">Registrar</a>
+            <a href="{% url 'pagina_inicial' %}" class="link-button">Sem conta</a>
+        </div>
+        
+            
+        
+        <!-- Error messages (optional) -->
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </form>
+</div>
+
+</body>
+</html>

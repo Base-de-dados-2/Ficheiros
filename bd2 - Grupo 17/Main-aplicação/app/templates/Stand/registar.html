@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Registar Stand{% endblock %}
+
+{% block content %}
+<h2>Registar Stand</h2>
+
+<!-- Formulário para registrar um novo stand -->
+<form method="post">
+    {% csrf_token %}
+    <!-- Exibe os campos do formulário -->
+    {{ form.as_p }}
+
+    <!-- Botão de submissão do formulário -->
+    <button type="submit" class="btn btn-primary">Salvar</button>
+
+    <!-- Link para voltar à página inicial -->
+    <a href="{% url 'pagina_inicial' %}" class="btn btn-secondary">Voltar</a>
+</form>
+
+{% endblock %}

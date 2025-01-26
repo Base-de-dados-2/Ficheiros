@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Utilizador{% endblock %}
+
+{% block content %}
+    <h2>Detalhes do Utilizador</h2>
+    <ul>
+        <li><strong>ID:</strong> {{ utilizador.id_utilizador }}</li>
+        <li><strong>Nome:</strong> {{ utilizador.nome }}</li>
+        <li><strong>Email:</strong> {{ utilizador.email }}</li>
+        <li><strong>Telefone:</strong> {{ utilizador.telefone }}</li>
+        <li><strong>Tipo de Utilizador:</strong> {{ utilizador.tipo_utilizador }}</li>
+        <li><strong>Data de Criação:</strong> {{ utilizador.data_criacao }}</li>
+    </ul>
+    <a href="{% url 'utilizadores_listar' %}" class="btn btn-secondary">Voltar para a lista</a>
+
+    {% if utilizador.id_utilizador %}
+        <a href="{% url 'utilizadores_atualizar' id=utilizador.id_utilizador %}" class="btn btn-primary">Editar</a>
+    {% else %}
+        <p>O ID do utilizador não foi encontrado.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Listar Utilizadores{% endblock %}
+
+{% block content %}
+    <h2>Utilizadores</h2>
+
+    <!-- Mostrar mensagem de erro, se existir -->
+    {% if erro %}
+    <div class="alert alert-danger" role="alert">
+        {{ erro }}
+    </div>
+    {% endif %}
+
+    {% if utilizadores %}
+        <!-- Tornar a tabela rolável em telas pequenas -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Tipo de Utilizador</th>
+                        <th>Data de Criação</th>
+                        <th>Ações</th>  <!-- Coluna para os botões -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for utilizador in utilizadores %}
+                        <tr>
+                            <td>{{ utilizador.id_utilizador }}</td>
+                            <td>{{ utilizador.nome }}</td>
+                            <td>{{ utilizador.email }}</td>
+                            <td>{{ utilizador.telefone }}</td>
+                            <!-- Verificando o valor do tipo_utilizador -->
+                            <td>
+                                {% if utilizador.tipo_utilizador|add:"0" == 1 %}
+                                    Admin
+                                {% elif utilizador.tipo_utilizador|add:"0" == 0 %}
+                                    Cliente
+                                {% else %}
+                                    Desconhecido
+                                {% endif %}
+                            </td>
+                            <td>{{ utilizador.data_criacao }}</td>
+
+                            <!-- Coluna de botões para editar, remover e ver detalhes -->
+                            <td>
+                                <a href="{% url 'utilizadores_listar_id' utilizador.id_utilizador %}" class="btn btn-info btn-sm">Ver Detalhes</a>
+                                <a href="{% url 'utilizadores_atualizar' utilizador.id_utilizador %}" class="btn btn-warning btn-sm">Editar</a>
+                                <form action="{% url 'utilizadores_remover' utilizador.id_utilizador %}" method="POST" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover este utilizador?')">Remover</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Não há utilizadores registrados.</p>
+    {% endif %}
+
+    <a href="{% url 'utilizadores_registar' %}" class="btn btn-primary">Registar Novo utilizador</a>
+{% endblock %}

@@ -1,0 +1,539 @@
+--Devolve JSON
+
+CREATE OR REPLACE FUNCTION GetTransacaoVendaJson()
+RETURNS JSON AS $$
+BEGIN
+    RETURN (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                'ID_Transacao', T.ID_Transacao,
+                'Data_Venda', T.Data_Venda,
+                'Valor_Venda', T.Valor_Venda,
+                'Marca', V.Marca,
+                'Modelo', V.Modelo,
+                'Nome_Cliente', C.Nome
+            )
+        )
+        FROM TransacaoVenda_BD2 T
+        INNER JOIN Veiculo_BD2 V ON T.ID_Veiculo = V.ID_Veiculo
+        INNER JOIN Cliente_BD2 C ON T.ID_Cliente = C.ID_Cliente
+        INNER JOIN Vendedor_BD2 VD ON T.ID_Vendedor = VD.ID_Vendedor
+        WHERE VD.ID_Vendedor = 1
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+--Script para ver o histórico completo das transações das vendas(json)
+CREATE OR REPLACE FUNCTION GetTransacaoVendaJson()
+RETURNS JSON AS $$
+BEGIN
+    RETURN (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                'ID_Transacao', T.ID_Transacao,
+                'Data_Venda', T.Data_Venda,
+                'Valor_Venda', T.Valor_Venda,
+                'ID_Cliente', C.ID_Cliente,
+                'Nome_Cliente', U_Cliente.Nome,
+                'Marca', V.Marca,
+                'Modelo', V.Modelo,
+                'Ano', V.Ano,
+                'ID_Vendedor', Vendedor.ID_Vendedor,
+                'Nome_Vendedor', U_Vendedor.Nome
+            )
+        )
+        FROM TransacaoVenda_BD2 T
+        INNER JOIN Cliente_BD2 C ON T.ID_Cliente = C.ID_Cliente
+        INNER JOIN Utilizador_BD2 U_Cliente ON C.ID_Utilizador = U_Cliente.ID_Utilizador
+        INNER JOIN Vendedor_BD2 Vendedor ON T.ID_Vendedor = Vendedor.ID_Vendedor
+        INNER JOIN Utilizador_BD2 U_Vendedor ON Vendedor.ID_Utilizador = U_Vendedor.ID_Utilizador
+        INNER JOIN Veiculo_BD2 V ON T.ID_Veiculo = V.ID_Veiculo
+        ORDER BY T.Data_Venda DESC
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION GetReceitaTotalPorStandJson()
+RETURNS JSON AS $$
+BEGIN
+    RETURN (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                'Nome_Stand', S.Nome,
+                'Receita_Total', SUM(T.Valor_Venda)
+            )
+        )
+        FROM Stand_BD2 S
+        INNER JOIN Veiculo_BD2 V ON S.ID_Stand = V.ID_Stand
+        INNER JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+        GROUP BY S.Nome
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION GetPromocoesAtuaisJson()
+RETURNS JSON AS $$
+BEGIN
+    RETURN (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                'Nome_Promocao', P.Nome_Promocao,
+                'Marca', V.Marca,
+                'Modelo', V.Modelo,
+                'Preco_Original', V.Preco,
+                'Preco_Com_Desconto', ROUND(V.Preco * (1 - P.Percentual_Desconto / 100), 2),
+                'Data_Inicio', P.Data_Inicio,
+                'Data_Termino', P.Data_Termino
+            )
+        )
+        FROM Promocao_BD2 P
+        INNER JOIN Veiculo_BD2 V ON P.ID_Veiculo = V.ID_Veiculo
+        WHERE CURRENT_DATE BETWEEN P.Data_Inicio AND P.Data_Termino
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION GetTransacaoVendaDetalhesJson()
+RETURNS JSON AS $$
+BEGIN
+    RETURN (
+        SELECT JSON_AGG(
+            JSON_BUILD_OBJECT(
+                'ID_Transacao', T.ID_Transacao,
+                'Data_Venda', T.Data_Venda,
+                'Valor_Venda', T.Valor_Venda,
+                'ID_Cliente', C.ID_Cliente,
+                'Nome_Cliente', U_Cliente.Nome,
+                'Marca', V.Marca,
+                'Modelo', V.Modelo,
+                'Ano', V.Ano,
+                'ID_Vendedor', Vendedor.ID_Vendedor,
+                'Nome_Vendedor', U_Vendedor.Nome
+            )
+        )
+        FROM TransacaoVenda_BD2 T
+        INNER JOIN Cliente_BD2 C ON T.ID_Cliente = C.ID_Cliente
+        INNER JOIN Utilizador_BD2 U_Cliente ON C.ID_Utilizador = U_Cliente.ID_Utilizador
+        INNER JOIN Vendedor_BD2 Vendedor ON T.ID_Vendedor = Vendedor.ID_Vendedor
+        INNER JOIN Utilizador_BD2 U_Vendedor ON Vendedor.ID_Utilizador = U_Vendedor.ID_Utilizador
+        INNER JOIN Veiculo_BD2 V ON T.ID_Veiculo = V.ID_Veiculo
+        ORDER BY T.Data_Venda DESC
+    );
+END;
+$$ LANGUAGE plpgsql;
+------------------------------------------------------------------------------------------------------
+--XML
+
+
+
+
+CREATE OR REPLACE FUNCTION GetReceitaAnualXml()
+RETURNS XML AS $$
+BEGIN
+    RETURN (
+        SELECT XMLAGG(
+            XMLELEMENT(
+                NAME "AnoReceita",
+                XMLELEMENT(NAME "Ano", EXTRACT(YEAR FROM T.Data_Venda)),
+                XMLELEMENT(NAME "Receita_Total", SUM(T.Valor_Venda))
+            )
+        )
+        FROM TransacaoVenda_BD2 T
+        GROUP BY EXTRACT(YEAR FROM T.Data_Venda)
+        ORDER BY EXTRACT(YEAR FROM T.Data_Venda) DESC
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION GetVeiculosComPoucasVendasXml()
+RETURNS XML AS $$
+BEGIN
+    RETURN (
+        SELECT XMLAGG(
+            XMLELEMENT(
+                NAME "Veiculo",
+                XMLELEMENT(NAME "ID_Veiculo", V.ID_Veiculo),
+                XMLELEMENT(NAME "Marca", V.Marca),
+                XMLELEMENT(NAME "Modelo", V.Modelo),
+                XMLELEMENT(NAME "Ano", V.Ano),
+                XMLELEMENT(NAME "Total_Vendas", COUNT(T.ID_Transacao)),
+                XMLELEMENT(NAME "Preco_Medio_Venda", ROUND(AVG(T.Valor_Venda), 2))
+            )
+        )
+        FROM Veiculo_BD2 V
+        LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+        GROUP BY V.ID_Veiculo, V.Marca, V.Modelo, V.Ano
+        HAVING COUNT(T.ID_Transacao) <= 1 -- Veículos com 0 ou 1 venda
+        ORDER BY Total_Vendas ASC
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE FUNCTION GetTransacaoVendaDetalhesXml()
+RETURNS XML AS $$
+BEGIN
+    RETURN (
+        SELECT XMLAGG(
+            XMLELEMENT(
+                NAME "Transacao",
+                XMLELEMENT(NAME "ID_Transacao", T.ID_Transacao),
+                XMLELEMENT(NAME "Data_Venda", T.Data_Venda),
+                XMLELEMENT(NAME "Valor_Venda", T.Valor_Venda),
+                XMLELEMENT(NAME "ID_Cliente", C.ID_Cliente),
+                XMLELEMENT(NAME "Nome_Cliente", U_Cliente.Nome),
+                XMLELEMENT(NAME "Marca", V.Marca),
+                XMLELEMENT(NAME "Modelo", V.Modelo),
+                XMLELEMENT(NAME "Ano", V.Ano),
+                XMLELEMENT(NAME "ID_Vendedor", Vendedor.ID_Vendedor),
+                XMLELEMENT(NAME "Nome_Vendedor", U_Vendedor.Nome)
+            )
+        )
+        FROM TransacaoVenda_BD2 T
+        INNER JOIN Cliente_BD2 C ON T.ID_Cliente = C.ID_Cliente
+        INNER JOIN Utilizador_BD2 U_Cliente ON C.ID_Utilizador = U_Cliente.ID_Utilizador
+        INNER JOIN Vendedor_BD2 Vendedor ON T.ID_Vendedor = Vendedor.ID_Vendedor
+        INNER JOIN Utilizador_BD2 U_Vendedor ON Vendedor.ID_Utilizador = U_Vendedor.ID_Utilizador
+        INNER JOIN Veiculo_BD2 V ON T.ID_Veiculo = V.ID_Veiculo
+        ORDER BY T.Data_Venda DESC
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-----------------------------------------------------------------------------
+
+--TRIGGERS
+
+
+
+CREATE OR REPLACE FUNCTION AtualizaResumoStand()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Recalcula os valores para o stand afetado
+    UPDATE ResumoStand_BD2
+    SET 
+        Total_Veiculos_Disponiveis = (
+            SELECT COUNT(DISTINCT V.ID_Veiculo)
+            FROM Veiculo_BD2 V
+            WHERE V.ID_Stand = NEW.ID_Stand
+        ),
+        Total_Vendas = (
+            SELECT COUNT(DISTINCT T.ID_Transacao)
+            FROM Veiculo_BD2 V
+            LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+            WHERE V.ID_Stand = NEW.ID_Stand
+        ),
+        Receita_Total = (
+            SELECT COALESCE(SUM(T.Valor_Venda), 0)
+            FROM Veiculo_BD2 V
+            LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+            WHERE V.ID_Stand = NEW.ID_Stand
+        )
+    WHERE Nome_Stand = (SELECT Nome FROM Stand_BD2 WHERE ID_Stand = NEW.ID_Stand);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER TriggerAtualizaResumoStand
+AFTER INSERT OR UPDATE OR DELETE
+ON TransacaoVenda_BD2
+FOR EACH ROW
+EXECUTE FUNCTION AtualizaResumoStand();
+
+
+
+
+CREATE OR REPLACE FUNCTION atualiza_total_vendas() 
+RETURNS TRIGGER AS $$
+BEGIN
+   
+    UPDATE Vendedor_BD2 VD
+    SET Total_Vendas = (
+        SELECT COUNT(*)
+        FROM TransacaoVenda_BD2 T
+        WHERE T.ID_Vendedor = VD.ID_Vendedor
+    )
+    WHERE VD.ID_Vendedor = NEW.ID_Vendedor;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_atualiza_total_vendas
+AFTER INSERT ON TransacaoVenda_BD2
+FOR EACH ROW
+EXECUTE FUNCTION atualiza_total_vendas();
+
+
+
+
+CREATE OR REPLACE FUNCTION atualiza_data_criacao() 
+RETURNS TRIGGER AS $$
+BEGIN
+
+    NEW.data_criacao := NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_atualiza_data_criacao
+BEFORE INSERT ON pedidos
+FOR EACH ROW
+EXECUTE FUNCTION atualiza_data_criacao();
+
+
+
+--------------------------------------------------------------------------------
+
+
+--procedimentos 
+
+
+CREATE OR REPLACE PROCEDURE relatorio_receitas()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- A consulta que você forneceu
+    SELECT 
+        S.Nome AS Nome_Stand,
+        COUNT(DISTINCT V.ID_Veiculo) AS Total_Veiculos_Disponiveis,
+        COUNT(DISTINCT T.ID_Transacao) AS Total_Vendas,
+        COALESCE(SUM(T.Valor_Venda), 0) AS Receita_Total
+    FROM Stand_BD2 S
+    LEFT JOIN Veiculo_BD2 V ON S.ID_Stand = V.ID_Stand
+    LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+    GROUP BY S.Nome
+    ORDER BY Receita_Total DESC, Total_Vendas DESC;
+    
+END;
+$$;
+CALL relatorio_receitas_data('2025-01-01', '2025-12-31');
+
+
+
+
+CREATE OR REPLACE PROCEDURE relatorio_clientes_interessados()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    
+    SELECT 
+        C.ID_Cliente,
+        U.Nome AS Nome_Cliente,
+        V.Marca,
+        V.Modelo,
+        V.Ano,
+        V.Preco
+    FROM Cliente_BD2 C
+    INNER JOIN Utilizador_BD2 U ON C.ID_Utilizador = U.ID_Utilizador
+    INNER JOIN Veiculo_BD2 V ON C.Interesse_Veiculos = V.ID_Veiculo
+    LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+    WHERE T.ID_Transacao IS NULL;
+    
+END;
+$$;
+CALL relatorio_clientes_interessados();
+
+
+
+
+CREATE OR REPLACE PROCEDURE relatorio_total_vendas_por_vendedor()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+ 
+    SELECT 
+        VD.ID_Vendedor, 
+        U.Nome, 
+        COUNT(T.ID_Transacao) AS Total_Vendas
+    FROM Vendedor_BD2 VD
+    INNER JOIN Utilizador_BD2 U ON VD.ID_Utilizador = U.ID_Utilizador
+    LEFT JOIN TransacaoVenda_BD2 T ON VD.ID_Vendedor = T.ID_Vendedor
+    GROUP BY VD.ID_Vendedor, U.Nome;
+    
+END;
+$$;
+
+CALL relatorio_clientes_interessados_com_filtros(2020, 30000);
+
+
+
+
+CREATE OR REPLACE PROCEDURE update_veiculo_preco_desconto(id_veiculo INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE Veiculo_BD2
+    SET Preco = Preco * 0.9 -- Aplicar 10% de desconto ao veículo
+    WHERE ID_Veiculo = id_veiculo;
+END;
+$$;
+
+
+CREATE OR REPLACE PROCEDURE update_fornecedor_contato(id_fornecedor INT, novo_contato TEXT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE Fornecedor_BD2
+    SET Contato = novo_contato
+    WHERE ID_Fornecedor = id_fornecedor;
+END;
+$$;
+
+-----------------------------------------------------------------------------------------------------
+
+--Vistas Materializadas
+
+CREATE MATERIALIZED VIEW mv_veiculos_stand_central AS
+SELECT 
+    V.Marca, 
+    V.Modelo, 
+    V.Ano, 
+    V.Preco, 
+    S.Nome AS Nome_Stand
+FROM Veiculo_BD2 V
+JOIN Stand_BD2 S ON V.ID_Stand = S.ID_Stand
+WHERE S.Nome = 'Stand Central';
+
+
+
+
+CREATE MATERIALIZED VIEW mv_historico_veiculo_1 AS
+SELECT 
+    HV.Manutencoes, 
+    HV.Acidentes, 
+    HV.Donos_Anteriores, 
+    M.Data_Manutencao, 
+    M.Tipo_Manutencao
+FROM HistoricoVeiculo_BD2 HV
+JOIN Manutencao_BD2 M ON HV.ID_Veiculo = M.ID_Veiculo
+WHERE HV.ID_Veiculo = 1;
+
+
+
+CREATE MATERIALIZED VIEW mv_transacoes_vendedor_1 AS
+SELECT 
+    T.ID_Transacao, 
+    T.Data_Venda, 
+    T.Valor_Venda, 
+    V.Marca, 
+    V.Modelo, 
+    U.Nome AS Nome_Cliente
+FROM TransacaoVenda_BD2 T
+JOIN Veiculo_BD2 V ON T.ID_Veiculo = V.ID_Veiculo
+JOIN Utilizador_BD2 U ON T.ID_Cliente = U.ID_Utilizador
+JOIN Vendedor_BD2 VD ON T.ID_Vendedor = VD.ID_Vendedor
+WHERE VD.ID_Vendedor = 1;
+
+
+
+CREATE MATERIALIZED VIEW mv_transacoes_vendedor_1 AS
+SELECT 
+    T.ID_Transacao, 
+    T.Data_Venda, 
+    T.Valor_Venda, 
+    V.Marca, 
+    V.Modelo, 
+    U.Nome AS Nome_Cliente
+FROM TransacaoVenda_BD2 T
+JOIN Veiculo_BD2 V ON T.ID_Veiculo = V.ID_Veiculo
+JOIN Utilizador_BD2 U ON T.ID_Cliente = U.ID_Utilizador
+JOIN Vendedor_BD2 VD ON T.ID_Vendedor = VD.ID_Vendedor
+WHERE VD.ID_Vendedor = 1;
+
+
+
+CREATE MATERIALIZED VIEW mv_veiculo_com_desconto AS
+SELECT 
+    V.ID_Veiculo, 
+    V.Marca, 
+    V.Modelo, 
+    V.Preco * 0.9 AS Preco_Desconto -- Aplicar 10% de desconto
+FROM Veiculo_BD2 V
+WHERE V.ID_Veiculo = 1;
+
+
+
+CREATE MATERIALIZED VIEW mv_total_vendas_por_vendedor AS
+SELECT 
+    VD.ID_Vendedor, 
+    U.Nome, 
+    COUNT(T.ID_Transacao) AS Total_Vendas
+FROM Vendedor_BD2 VD
+JOIN Utilizador_BD2 U ON VD.ID_Utilizador = U.ID_Utilizador
+LEFT JOIN TransacaoVenda_BD2 T ON VD.ID_Vendedor = T.ID_Vendedor
+GROUP BY VD.ID_Vendedor, U.Nome;
+
+
+
+
+
+CREATE MATERIALIZED VIEW mv_receita_total_stand AS
+SELECT 
+    S.Nome AS Nome_Stand, 
+    SUM(T.Valor_Venda) AS Receita_Total
+FROM Stand_BD2 S
+JOIN Veiculo_BD2 V ON S.ID_Stand = V.ID_Stand
+JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+GROUP BY S.Nome;
+
+CREATE MATERIALIZED VIEW mv_veiculos_sem_fornecedor AS
+SELECT 
+    ID_Veiculo, 
+    Marca, 
+    Modelo
+FROM Veiculo_BD2
+WHERE ID_Fornecedor IS NULL;
+
+
+
+
+CREATE MATERIALIZED VIEW mv_transacoes_sem_vendedor AS
+SELECT *
+FROM TransacaoVenda_BD2
+WHERE ID_Vendedor IS NULL;
+
+
+
+CREATE MATERIALIZED VIEW mv_resumo_stand AS
+SELECT 
+    S.Nome AS Nome_Stand,
+    COUNT(DISTINCT V.ID_Veiculo) AS Total_Veiculos_Disponiveis,
+    COUNT(DISTINCT T.ID_Transacao) AS Total_Vendas,
+    COALESCE(SUM(T.Valor_Venda), 0) AS Receita_Total
+FROM Stand_BD2 S
+LEFT JOIN Veiculo_BD2 V ON S.ID_Stand = V.ID_Stand
+LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+GROUP BY S.Nome
+ORDER BY Receita_Total DESC, Total_Vendas DESC;
+
+
+
+CREATE MATERIALIZED VIEW mv_clientes_interessados_nao_vendidos AS
+SELECT 
+    C.ID_Cliente,
+    U.Nome AS Nome_Cliente,
+    V.Marca,
+    V.Modelo,
+    V.Ano,
+    V.Preco
+FROM Cliente_BD2 C
+JOIN Utilizador_BD2 U ON C.ID_Utilizador = U.ID_Utilizador
+JOIN Veiculo_BD2 V ON C.Interesse_Veiculos = V.ID_Veiculo
+LEFT JOIN TransacaoVenda_BD2 T ON V.ID_Veiculo = T.ID_Veiculo
+WHERE T.ID_Transacao IS NULL;

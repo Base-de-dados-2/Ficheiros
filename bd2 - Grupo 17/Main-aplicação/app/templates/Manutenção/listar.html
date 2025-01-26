@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Listar Manutenções{% endblock %}
+
+{% block content %}
+<h2>Manutenções</h2>
+
+{% if manutencoes %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID Veículo</th>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Oficina</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for manutencao in manutencoes %}
+            <tr>
+                <td>{{ manutencao.id_manutencao }}</td>
+                <td>{{ manutencao.id_veiculo }}</td>
+                <td>{{ manutencao.data_manutencao }}</td>
+                <td>{{ manutencao.tipo_manutencao }}</td>
+                <td>{{ manutencao.oficina_responsavel }}</td>
+                <td>
+                    <a href="{% url 'manutencao_listar_id' manutencao.id_manutencao %}" class="btn btn-info">Ver Detalhes</a>
+                    <a href="{% url 'manutencao_atualizar' manutencao.id_manutencao %}" class="btn btn-warning">Editar</a>
+                    <form action="{% url 'manutencao_remover' manutencao.id_manutencao %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta manutenção?')">Remover</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Não há manutenções cadastradas. Volte mais tarde.</p>
+{% endif %}
+
+<a href="{% url 'manutencao_registar' %}" class="btn btn-primary">Registar Nova Manutenção</a>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Vendedores{% endblock %}
+
+{% block content %}
+{% if erro %}
+<div class="alert alert-danger" role="alert">
+    {{ erro }}
+</div>
+{% endif %}
+
+
+<h2>Lista de Vendedores</h2>
+
+{% if vendedores %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Utilizador</th>
+                <th>Cargo</th>
+                <th>Vendas Realizadas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vendedor in vendedores %}
+                <tr>
+                    <td>{{ vendedor.id_vendedor }}</td>
+                    <td>{{ vendedor.id_utilizador }}</td>
+                    <td>{{ vendedor.cargo }}</td>
+                    <td>{{ vendedor.vendas_realizadas }}</td>
+                    <td>
+                        <a href="{% url 'vendedor_listar_id' vendedor.id_vendedor %}" class="btn btn-info">Detalhes</a>
+                        <a href="{% url 'vendedor_atualizar' vendedor.id_vendedor %}" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'vendedor_remover' vendedor.id_vendedor %}" class="btn btn-danger" 
+                           onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Não há vendedores cadastrados no momento.</p>
+{% endif %}
+
+<a href="{% url 'vendedor_registar' %}" class="btn btn-primary">Adicionar Novo Vendedor</a>
+{% endblock %}

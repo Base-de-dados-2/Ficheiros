@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Cliente{% endblock %}
+
+{% block content %}
+<h2>Detalhes do Cliente</h2>
+
+<p><strong>ID:</strong> {{ cliente.id_cliente }}</p>
+<p><strong>Utilizador:</strong> 
+    {% for utilizador in utilizadores %}
+        {% if utilizador.id_utilizador == cliente.id_utilizador %}
+            {{ cliente.id_utilizador }} - {{ utilizador.nome }}
+        {% endif %}
+    {% endfor %}
+</p>
+
+<p><strong>Histórico de Compras:</strong> {{ cliente.historico_compras }}</p>
+
+<p><strong>Interesse em Veículos:</strong> 
+    {% for veiculo in veiculos %}
+        {% if veiculo.id == cliente.interesse_veiculos %}
+            {{ cliente.interesse_veiculos }} - {{ veiculo.modelo }} ({{ veiculo.marca }})
+        {% endif %}
+    {% endfor %}
+</p>
+
+<a href="{% url 'clientes_atualizar' cliente.id_cliente %}" class="btn btn-warning">Editar</a>
+<a href="{% url 'clientes_listar' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}

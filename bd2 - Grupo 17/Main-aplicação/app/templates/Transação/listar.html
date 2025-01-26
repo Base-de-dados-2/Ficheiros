@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Transações de Venda{% endblock %}
+
+{% block content %}
+    <h2>Lista de Transações de Venda</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Veículo</th>
+                <th>Vendedor</th>
+                <th>Data da Venda</th>
+                <th>Valor da Venda</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transacao in transacoes %}
+                <tr>
+                    <td>{{ transacao.id_transacao }}</td>
+                    <td>{{ transacao.id_cliente }}</td>
+                    <td>{{ transacao.id_veiculo }}</td>
+                    <td>{{ transacao.id_vendedor }}</td>
+                    <td>{{ transacao.data_venda }}</td>
+                    <td>{{ transacao.valor_venda }}€</td>
+                    <td>
+                        <a href="{% url 'transacaovenda_detalhes' transacao.id_transacao %}" class="btn btn-info">Detalhes</a>
+                        <a href="{% url 'transacaovenda_atualizar' transacao.id_transacao %}" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'transacaovenda_remover' transacao.id_transacao %}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'transacaovenda_registrar' %}" class="btn btn-primary">Adicionar Nova Transação</a>
+{% endblock %}

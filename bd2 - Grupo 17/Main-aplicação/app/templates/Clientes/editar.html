@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Cliente{% endblock %}
+
+{% block content %}
+<h2>Editar Cliente</h2>
+
+<!-- Formulário para editar um cliente existente -->
+<form method="post">
+    {% csrf_token %}
+    <!-- Renderiza os campos do formulário com um estilo mais compacto -->
+    <div class="form-group">
+        <label for="id_utilizador">ID do Utilizador</label>
+        <select class="form-control" id="id_utilizador" name="id_utilizador">
+            {% for utilizador in utilizadores %}
+                <option value="{{ utilizador.id_utilizador }}" {% if utilizador.id_utilizador == form.id_utilizador.value %}selected{% endif %}>
+                    {{ utilizador.id_utilizador }} - {{ utilizador.nome }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="historico_compras">Histórico de Compras</label>
+        <textarea class="form-control" id="historico_compras" name="historico_compras" rows="5">{{ form.historico_compras.value }}</textarea>
+    </div>
+
+    <!-- Campo de seleção única para 'Interesse em Veículos' -->
+    <div class="form-group">
+        <label for="interesse_veiculos">Interesse em Veículos</label>
+        <select class="form-control" id="interesse_veiculos" name="interesse_veiculos">
+            {% for veiculo in veiculos %}
+                <option value="{{ veiculo.id }}" {% if veiculo.id == form.interesse_veiculos.value %}selected{% endif %}>
+                    {{ veiculo.id }} - {{ veiculo.modelo }} ({{ veiculo.marca }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Botão para salvar as alterações -->
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+
+    <!-- Link para voltar à página anterior -->
+    <a href="{% url 'clientes_listar' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

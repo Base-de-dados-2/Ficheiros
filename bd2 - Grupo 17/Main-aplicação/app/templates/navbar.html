@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Remover o estilo de link no nome de usuário */
+        .nav-link {
+            text-decoration: none; /* Remove sublinhado */
+        }
+
+        /* Estilizar o nome do usuário */
+        #utilizador_info {
+            color: #333; /* Cor escura para o nome */
+            font-weight: bold; /* Negrito para destaque */
+        }
+        
+        /* Personalização do ícone do usuário */
+        .nav-link i {
+            color: #333; /* Cor do ícone do usuário */
+        }
+
+        /* Remova qualquer margem ou pseudo-elemento do ícone */
+        .fas.fa-user {
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+            vertical-align: middle; /* Ajuste o alinhamento vertical */
+        }
+
+        /* Ajuste geral para alinhar o texto e ícone */
+        .nav-link {
+            display: flex;
+            align-items: center; /* Alinhar todos os itens ao centro */
+        }
+
+        /* Opcional: ajuste para o texto */
+        #utilizador_info {
+            line-height: 1;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Motors Nuva <span class="sr-only">(current)</span></a>
+            </li>
+            
+            <!-- Dropdown de Veículos -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownVeiculos" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Veículos
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownVeiculos">
+                    <a class="dropdown-item" href="/veiculos/listar">Listar</a>
+                    {% if user.is_authenticated %}
+                     <a class="dropdown-item" href="/veiculos/registar">Registar</a>
+                    {% endif %}
+                </div>
+            </li>
+
+            <!-- Outros Menus -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPromocoes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Promoções
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownPromocoes">
+                    <a class="dropdown-item" href="/promocoes/listar">Listar</a>
+                    {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="/promocoes/registar">Registar</a>
+                    {% endif %}
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownStand" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Stand
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownStand">
+                    <a class="dropdown-item" href="/stands/listar">Listar</a>
+                    {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="/stands/registar">Registar</a>
+                    {% endif %}
+                </div>
+            </li>
+
+            <!-- Menu de Staff, visível apenas para administradores -->
+            {% if user.is_staff %}
+            <!-- Dropdown de Vendedores -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownVendedores" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Vendedores
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownVendedores">
+                    <a class="dropdown-item" href="/vendedores/listar">Listar</a>
+                    <a class="dropdown-item" href="/vendedores/registar">Registar</a>
+                </div>
+            </li>
+
+             <!-- Dropdown de Clientes -->
+             <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownClientes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Clientes
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownClientes">
+                    <a class="dropdown-item" href="/clientes/listar">Listar</a>
+                    <a class="dropdown-item" href="/clientes/registar">Registar</a>
+                </div>
+            </li>
+
+            <!-- Dropdown de Fornecedores -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownFornecedores" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Fornecedores
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownFornecedores">
+                    <a class="dropdown-item" href="/fornecedor/listar">Listar</a>
+                    <a class="dropdown-item" href="/fornecedor/registar">Registar</a>
+                </div>
+            </li>
+
+            <!-- Dropdown de Utilizadores -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUtilizadores" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Utilizadores
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownUtilizadores">
+                    <a class="dropdown-item" href="/utilizadores/listar">Listar</a>
+                    <a class="dropdown-item" href="/utilizadores/registar">Registar</a>
+                </div>
+            </li>
+
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTestDrives" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Test Drives
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownTestDrives">
+                    <a class="dropdown-item" href="/testdrive/listar">Listar</a>
+                    <a class="dropdown-item" href="/testdrive/registar">Registar</a>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownTransacoes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Transações
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownTransacoes">
+                    <a class="dropdown-item" href="/transacoes/listar">Listar</a>
+                    <a class="dropdown-item" href="/transacoes/registrar/">Registar</a>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownManutencoes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Manutenções
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownManutencoes">
+                    <a class="dropdown-item" href="/manutencoes/listar">Listar</a>
+                    <a class="dropdown-item" href="/manutencoes/registar">Registar</a>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHistorico" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Histórico
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownHistorico">
+                    <a class="dropdown-item" href="/historico/listar/">Listar</a>
+                    <a class="dropdown-item" href="/historico/registrar/">Registar</a>
+                </div>
+            </li>
+            {% endif %}
+        </ul>
+
+        <!-- Login / User Info -->
+        {% if user.is_authenticated %}
+                <a class="nav-link d-flex" href="/perfil/">
+                    <div style="margin-right: 10px;">
+                        <span id="utilizador_info">{{ user.username }}</span>
+                    </div>
+                    <div> <i class="fas fa-user"></i> </div>
+                </a>
+        {% else %}
+                <li class="nav-item" style="list-style: none; margin: 0; padding: 0;">
+            <a class="nav-link d-flex align-items-center" id="utilizador_link" href="login/">
+                <div style="margin-right: 10px;">
+                    <span id="utilizador_info">Login</span>
+                </div>
+                <div>
+                    <i class="fas fa-user" style="margin: 0; padding: 0; line-height: 1;"></i>
+                </div>
+            </a>
+        </li>
+
+        
+        
+        {% endif %}
+
+    </div>
+</nav>
+
+<!-- JavaScript Dependencies -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Histórico{% endblock %}
+
+{% block content %}
+<h2>Editar Histórico</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Seleção de Veículo -->
+    <div class="form-group">
+        <label for="id_veiculo">Veículo</label>
+        <select class="form-control" id="id_veiculo" name="id_veiculo" required>
+            <option value="" {% if form.id_veiculo.value == "" %}selected{% endif %}>Escolha o veículo</option>
+            {% for veiculo in veiculos %}
+                <option value="{{ veiculo.id }}" {% if veiculo.id == form.id_veiculo.value %}selected{% endif %}>
+                    {{ veiculo.modelo }} - {{ veiculo.marca }}
+                </option>
+            {% endfor %}
+        </select>        
+        {% if form.id_veiculo.errors %}
+            <div class="text-danger">
+                {% for error in form.id_veiculo.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Detalhes da Manutenção -->
+    <div class="form-group">
+        <label for="manutencoes">Descrição da Manutenção</label>
+        <textarea class="form-control" id="manutencoes" name="manutencoes" rows="3" required>{{ form.manutencoes.value }}</textarea>
+        {% if form.manutencoes.errors %}
+            <div class="text-danger">
+                {% for error in form.manutencoes.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Detalhes de Acidentes -->
+    <div class="form-group">
+        <label for="acidentes">Histórico de Acidentes</label>
+        <textarea class="form-control" id="acidentes" name="acidentes" rows="3">{{ form.acidentes.value }}</textarea>
+        {% if form.acidentes.errors %}
+            <div class="text-danger">
+                {% for error in form.acidentes.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Dono Anterior -->
+    <div class="form-group">
+        <label for="dono_anterior">Dono Anterior</label>
+        <input type="text" class="form-control" id="dono_anterior" name="dono_anterior" value="{{ form.dono_anterior.value }}" required>
+        {% if form.dono_anterior.errors %}
+            <div class="text-danger">
+                {% for error in form.dono_anterior.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Botões -->
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    <a href="{% url 'historico_listar' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
